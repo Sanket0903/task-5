@@ -6,74 +6,84 @@ import './Page.css';
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [allEntry, setAllEntry] = useState([null]);
-  const [storedData, setStoredData] = useState(null);
+  const [storedData, setStoredData] = useState([]);
 
   const navigate = useNavigate();
 
   const submitForm = (event) => {
     event.preventDefault();
-  
+
     if (username.trim() === '' || password.trim() === '') {
       alert('Please fill in the fields.');
       return;
     }
 
-    if (storedData && username === storedData.username && password === storedData.password && storedData.HOD === 'HOD') {
-      console.log('Login successful!');
-      localStorage.setItem('loggedInUser', JSON.stringify({ username: username, password: password }));
-      navigate('/dashboard/hod');
-    } else if(storedData && username === storedData.username && password === storedData.password && storedData.Staff === 'staff'){     
-       console.log('Login successful!');
-       localStorage.setItem('loggedInUser', JSON.stringify({ username: username, password: password }));
-       navigate('/dashboard/staff')
+    const loggedInUser = storedData.find(
+      (entry) => entry.username === username && entry.password === password
+    );
 
-  }else{
+    if (loggedInUser) {
+      const userRole = loggedInUser.role; 
+      const name = loggedInUser.firstname;
+      console.log(name)
+      if (userRole === 'HOD') {
+        console.log('Login successful as HOD!');
+        localStorage.setItem('loggedInUser', JSON.stringify({ firstname: name, username: username, role: 'HOD' }));
+        navigate('/dashboard/hod');
+      } else if (userRole === 'staff') {
+        console.log('Login successful as staff!');
+        localStorage.setItem('loggedInUser', JSON.stringify({ firstname: name, username: username, role: 'staff' }));
+        navigate('/dashboard/staff');
+      }
+    } else {
       alert('Incorrect username or password. Please try again.');
-    }setAllEntry('')
+    }
   };
-  
 
   useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem('registrationData'));
+    const storedData = JSON.parse(localStorage.getItem('registrationData')) || [];
     setStoredData(storedData);
-    console.log(allEntry);
-  }, [allEntry]);
+  }, []);
 
   return (
-    <div className='container template d-flex justify-content-center align-items-center vh-100 bg-primary'>
-      <div className='form_container p-5 rounded bg-white'>
-        <form onSubmit={submitForm} >
-          <h1 className='text-center'>Login</h1>
-          <div className='mb-2'>
-            <label htmlFor='username'>Username</label>
-            <input
-              type='text'
-              value={username}
-              onChange={(event) => setUsername(event.target.value)}
-              placeholder='Enter username'
-              className='form-control'
-            />
+    <div className='container template bg-success'>
+      <div className='row justify-content-center align-items-center vh-100'>
+        <div className='col-md-5'>
+          <div className='card p-4'>
+            <h1 className='card-title text-center mb-4'>Login</h1>
+            <form onSubmit={submitForm}>
+              <div className='mb-3'>
+                <label htmlFor='username' className='form-label'>Username</label>
+                <input
+                  type='text'
+                  value={username}
+                  onChange={(event) => setUsername(event.target.value)}
+                  placeholder='Enter username'
+                  className='form-control'
+                  id='username'
+                />
+              </div>
+              <div className='mb-3'>
+                <label htmlFor='password' className='form-label'>Password</label>
+                <input
+                  type='password'
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  placeholder='Enter password'
+                  className='form-control'
+                  id='password'
+                />
+              </div>
+
+              <div className='d-grid'>
+                <button className='btn btn-primary' type='submit'>Login</button>
+              </div>
+            </form>
+            <p className='text-center mt-3'>
+              Not Registered Yet? <Link to='/Registration'>Registration</Link>
+            </p>
           </div>
-          <div>
-            <label htmlFor='password'>Password</label>
-            <input
-              type='password'
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              placeholder='Enter password'
-              className='form-control'
-            />
-          </div>
-          
-          
-          <div className='d-grid mb-2'>
-            <button className='btn btn btn-primary' >Sign in</button>
-          </div>
-          <p className='text-end mt-2'>
-            Don't have an account? <Link to='/Registration'>Registration</Link>
-          </p>
-        </form>
+        </div>
       </div>
     </div>
   );

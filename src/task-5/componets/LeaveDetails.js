@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Box, Button, FormLabel, TextField, TextareaAutosize } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 import { FirstContext } from './Context';
 import { useNavigate } from 'react-router';
@@ -15,7 +14,7 @@ function Details() {
     LeaveReason: '',
     Name: Name,
     LeaveStatus: 'pending',
-    leaveCount: 0
+    leaveCount: 0,
   });
 
   const days = new Date(data.FromDate);
@@ -62,7 +61,10 @@ function Details() {
     } else if (data.Name === '') {
       alert('Please fill the name');
     } else {
-      localStorage.setItem('leavedetails', JSON.stringify([...detail, { ...data, id: uuidv4() }]));
+      localStorage.setItem(
+        'leavedetails',
+        JSON.stringify([...detail, { ...data, id: uuidv4() }])
+      );
       setToggle(!toggle);
       setData({
         FromDate: '',
@@ -70,34 +72,82 @@ function Details() {
         LeaveReason: '',
         Name: Name,
         LeaveStatus: 'pending',
-
       });
       navigate('/dashboard/staff');
     }
   };
 
   return (
-    <>
+    <div className="container mt-5">
       <form>
-        <Box borderRadius="15px" border={"0.25px solid #ccc"} alignItems={"center"} padding={"40px"} display={"flex"} flexDirection={"column"} maxWidth={"450px"} margin={"60px auto"} boxShadow={"5px 5px 10px #ccc"} sx={{ ":hover": { boxShadow: "10px 10px 20px #ccc" } }}>
-          <FormLabel><h5>FromDate</h5>
-            <TextField type='date' value={data.FromDate} onChange={handleChange} size='small' sx={{ mb: 2 }} name='FromDate' />
-          </FormLabel>
-          <FormLabel><h5>ToDate</h5>
-            <TextField type='date' value={data.ToDate} onChange={handleChange} size='small' sx={{ mb: 2 }} name='ToDate' />
-          </FormLabel>
-          <div onChange={handleChange} name='leaveCount' type='number' value={num}>Number of Days: {displayLeave}  </div>
-          <FormLabel><h5>Name</h5>
-            <TextField type="text" name='Name' value={data.Name} onChange={handleChange} size='small' sx={{ mb: 2 }} />
-          </FormLabel>
-          <FormLabel>LeaveReason
-            <TextareaAutosize type="text" name='LeaveReason' style={{ width: "400px" }} onChange={handleChange} value={data.LeaveReason} minRows={3}></TextareaAutosize>
-          </FormLabel>
-          <Button onClick={handleSubmit}>Apply Leave</Button>
-        </Box>
+        <div className="row justify-content-center">
+          <div className="col-md-5">
+            <div className="card p-4 shadow">
+              <h1 className="mb-4">Leave Details</h1>
+              <div className='row'>
+                <div className=" col-md-6 mb-3">
+                <label htmlFor="FromDate" className="form-label">
+                  <h5>From</h5>
+                </label>
+                <input
+                  type="date"
+                  className="form-control"
+                  id="FromDate"
+                  name="FromDate"
+                  value={data.FromDate}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="col-md-6 mb-3">
+                <label htmlFor="ToDate" className="form-label">
+                  <h5>To</h5>
+                </label>
+                <input
+                  type="date"
+                  className="form-control"
+                  id="ToDate"
+                  name="ToDate"
+                  value={data.ToDate}
+                  onChange={handleChange}
+                />
+              </div>
+              </div>
+              
+              <div style={{ display: 'none' }}>
+                <input
+                  onChange={handleChange}
+                  name="leaveCount"
+                  type="number"
+                  value={num}
+                />
+                Number of Days: {displayLeave}
+              </div>
+              <div className="mb-3">
+                <label htmlFor="LeaveReason" className="form-label">
+                  Reason
+                </label>
+                <textarea
+                  className="form-control"
+                  id="LeaveReason"
+                  name="LeaveReason"
+                  value={data.LeaveReason}
+                  onChange={handleChange}
+                  rows="3"
+                ></textarea>
+              </div>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleSubmit}
+              >
+                Apply
+              </button>
+            </div>
+          </div>
+        </div>
       </form>
-    </>
-  )
+    </div>
+  );
 }
 
 export default Details;

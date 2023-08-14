@@ -1,34 +1,49 @@
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import { useNavigate } from 'react-router';
+import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function Navbar() {
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleHomePage = () => {
-    navigate('/')
+    navigate('/');
     localStorage.removeItem('loggedInUser');
-  }
+  };
+  const isLoginPage = location.pathname === '/';
+
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
-        <Toolbar>
-
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} onClick={handleHomePage}>
-            Home
-          </Typography>
-          <Box >
-            <Button color='inherit' onClick={handleHomePage}>Logout</Button>
-          </Box>
-
-        </Toolbar>
-      </AppBar>
-    </Box>
+    <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div className="container-fluid">
+        <a className="navbar-brand" href="/" onClick={handleHomePage}>
+          Home
+        </a>
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >Home
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav ms-auto">
+            <li className="nav-item">
+              <button
+                className="btn btn-outline-light bg-danger"
+                onClick={handleHomePage}
+                hidden={isLoginPage}
+              >
+                Logout
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
   );
 }
-export default Navbar
+
+export default Navbar;
